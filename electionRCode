@@ -1,0 +1,20 @@
+elect <- read.csv("~/Documents/R/general-elections-votes-party-2015.csv")
+area <- as.vector(unique(elect$Area.Code))
+greenGetBlue <- function(data){
+  name <- NULL
+  change <- NULL
+
+  for(i in 1:length(area)){
+    seat <- which(elect$Area.Code==area[i])
+    temp.data <- data.frame(elect[seat,])
+    
+    if(substr(temp.data$Gain.Hold[1],1,3)=="CON"){
+      name[i] <- as.character(temp.data$Constituency[1])
+      change[i] <- as.numeric(as.factor(temp.data$Candidate.Votes[temp.data$Party.abbreviation=="Lab"]))+
+              as.numeric(as.factor(temp.data$Candidate.Votes[temp.data$Party.abbreviation=="Green"]))>
+              as.numeric(as.factor(temp.data$Candidate.Votes[temp.data$Party.abbreviation=="Cons"]))
+    }
+  }
+  stuff <- na.omit(data.frame(name,change))
+  return(stuff)
+}
